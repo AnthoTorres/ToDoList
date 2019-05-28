@@ -10,7 +10,7 @@ import UIKit
 
 
 
-class ToDoListTableViewController: UITableViewController {
+class ToDoListTableViewController: UITableViewController, ToDoItemDelegate {
 
     var toDoList:[String] = []
     
@@ -37,8 +37,22 @@ class ToDoListTableViewController: UITableViewController {
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
 
+    
+    func didSave(toDoItem: String) {
+        toDoList.append(toDoItem)
+        self.tableView.reloadData()
+    }
+    
     // MARK: - Table view data source
-
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == UITableViewCell.EditingStyle.delete {
+            toDoList.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
+        }
+    }
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
     override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
         return 1
@@ -63,6 +77,7 @@ class ToDoListTableViewController: UITableViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         
         if let viewController = storyboard.instantiateViewController(withIdentifier: "ToDoView") as? ToDoViewController {
+            viewController.delegate = self
             
             self.navigationController?.pushViewController(viewController, animated: true)
         }

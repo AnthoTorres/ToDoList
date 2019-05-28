@@ -8,9 +8,18 @@
 
 import UIKit
 
+protocol ToDoItemDelegate {
+    func didSave(toDoItem: String)
+    
+}
+
+
+
 class ToDoViewController: UIViewController {
 
     @IBOutlet weak var toDoTextField: UITextField!
+    var delegate: ToDoItemDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -26,6 +35,7 @@ class ToDoViewController: UIViewController {
     
     @objc func saveToDoItem() {
         print("Saved")
+        delegate?.didSave(toDoItem: toDoTextField.text ?? "")
         self.navigationController?.popViewController(animated: true)
         
     }
